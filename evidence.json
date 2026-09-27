@@ -1,0 +1,41 @@
+{
+  "live_run_date": "2026-09-27",
+  "run_type": "fresh end-to-end chain executed this run (not the 14:28Z rehearsal)",
+  "identity": {
+    "workspace": "Default Workspace",
+    "workspace_id": "cmufxsaus00j3pa0123gs7gjp",
+    "mailbox": "taches.vdemo.k0rr@mermail.app",
+    "mailbox_public_id": "6b56bd9a-6a5d-4ceb-b423-d0b57e55b37d",
+    "auth": "Mermail MCP OAuth 2.1 + PKCE (bearer token from credentials/mermail_oauth.json)"
+  },
+  "mcp_server": {
+    "url": "https://console.mermail.app/mcp",
+    "name": "mermail",
+    "version": "1.0.0",
+    "tool_count": 94,
+    "webhook_tools_present": ["create_webhook", "delete_webhook", "get_webhook", "list_webhook_deliveries", "list_webhooks", "retry_webhook_delivery", "rotate_webhook_secret", "test_webhook", "update_webhook"]
+  },
+  "chain": {
+    "cleanup": "delete_webhook 9fdaf393-fdbe-49c1-80ff-56215118487e (rehearsal hook) -> {\"deleted\": true}; list_webhooks shows exactly one active subscription after",
+    "webhook": {
+      "id": "49865120-e38f-498d-a9f7-6c5493c5cd64",
+      "created_at": "2026-09-27T15:03:11.535Z",
+      "endpoint": "https://webhook.site/1354ea11-012f-42f3-be0b-3ca21c8c09ab",
+      "eventTypes": ["message.received"],
+      "scope": "single mailbox 6b56bd9a (allInboxes=false)",
+      "status": "active",
+      "destructive_gate": "prepare_destructive_action -> single-use mcp_confirm_ token (5 min TTL) -> create_webhook with same arguments",
+      "signing_secret": "stored 0600 at credentials/live_run_webhook_secret.txt (never printed)"
+    },
+    "beats": [
+      {"beat": "test", "tool": "test_webhook", "delivery_id": "8cc4ec4e-7e45-4466-8846-50eaf7f5b869", "event_id": "a445bd9c-7a3d-4332-8d3c-2a6888c3227e", "result": "succeeded HTTP 200, 1 attempt, 15:04:47Z"},
+      {"beat": "trigger", "tool": "send_email self-send", "message_id": "5fb75c00-b605-462d-9ece-ccefdc56806f", "subject": "AGEA-72 live run trigger", "status": "queued 15:05:54Z -> delivered"},
+      {"beat": "deliver", "tool": "server-side webhook delivery of the real email event", "delivery_id": "13c52978-56ca-4800-b3ee-6b810d7bf2f4", "event_id": "05a0a896-4368-4050-a79c-73bee3c15393", "result": "succeeded HTTP 200, 1 attempt, 15:06:17Z"},
+      {"beat": "capture", "tool": "receiver ingest (webhook.site)", "evidence": "POST 2026-09-27 15:06:17, 636 bytes, event_type message.received, data.message_id 14f62651-4bff-44a4-8160-187744e1ab5f"},
+      {"beat": "verify_hmac", "tool": "verify_receiver_hmac.py (receiver-side)", "evidence": "HMAC VERIFIED: base64(HMAC-SHA256(base64decode(whsec_...), '<webhook-id>.<webhook-timestamp>.<body>')) == v1 signature header; svix-compatible signing scheme"}
+    ]
+  },
+  "policy_dryrun": {"cases": 6, "passed": 6, "file": "demo/policy_dryrun.py (re-run exit 0 this session)"},
+  "pr": {"repo": "Nudgen-Marketing/mermail-skills", "number": 389, "state": "OPEN", "mergeable": "MERGEABLE", "checked_at": "2026-09-27T15:00Z"},
+  "conclusion": "Full 5-beat chain re-executed live during video production: arm (create+confirm) -> synthetic test delivery HTTP 200 -> real trigger email -> server-side delivery HTTP 200 -> receiver capture -> receiver-side HMAC signature verification PASSED. New this run: signing-secret handshake verified end-to-end; old rehearsal hook deleted leaving exactly one subscription."
+}

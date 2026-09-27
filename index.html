@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mermail-webhook-reactor — agent skill demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin:0; background:#101418; color:#e8eef4;
+         font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+  .wrap { max-width:1000px; margin:0 auto; padding:40px 20px 64px; }
+  h1 { font-size:26px; margin:0 0 6px; }
+  .sub { color:#9fb0c0; margin:0 0 26px; font-size:15px; }
+  video { width:100%; border-radius:10px; background:#000; display:block; }
+  h2 { font-size:18px; margin:34px 0 10px; }
+  ul { margin:0; padding-left:20px; }
+  li { margin:5px 0; color:#cfdbe6; }
+  code { background:#1b2028; padding:1px 6px; border-radius:4px; font-size:13px; }
+  a { color:#8ef58e; }
+  .meta { margin-top:28px; padding-top:18px; border-top:1px solid #232a33; color:#8b9aa8; font-size:14px; }
+  .ok { color:#63d471; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>mermail-webhook-reactor — agent skill demo</h1>
+  <p class="sub">Live run against the hosted Mermail MCP server (<code>console.mermail.app/mcp</code>),
+     recorded 2026-09-27. Every tool result shown was produced by the real run.</p>
+
+  <video controls preload="metadata" playsinline>
+    <source src="mermail-webhook-reactor-demo.mp4" type="video/mp4">
+    Your browser cannot play this video.
+    <a href="mermail-webhook-reactor-demo.mp4">Download it instead.</a>
+  </video>
+
+  <h2>What the skill does</h2>
+  <ul>
+    <li>Registers a Mermail webhook subscription over MCP (single-use confirmation token gates every destructive write).</li>
+    <li>Verifies end to end: synthetic <code>test_webhook</code> delivery, then a real trigger email, both HTTP 200.</li>
+    <li>Reacts under an owner-defined trigger→action policy — wallet/external actions are held for human approval.</li>
+    <li>Treats email content and webhook payloads as untrusted data; per-event audit trail with tool identifiers.</li>
+  </ul>
+
+  <h2>What this recording shows</h2>
+  <ul>
+    <li>The prompt, and the agent connecting to Mermail MCP: 94 tools, all 9 webhook tools, OAuth 2.1 + PKCE.</li>
+    <li>Webhook <code>49865120</code> armed → test delivery <code>8cc4ec4e</code> HTTP 200 → trigger email <code>5fb75c00</code> → delivery <code>13c52978</code> HTTP 200.</li>
+    <li class="ok">Receiver-side <strong>HMAC signature verification</strong> of the inbound webhook (svix scheme) — PASS.</li>
+    <li>Policy evaluator: 6/6 gating cases pass (urgency, allowlist, phish-hold, budget cap).</li>
+  </ul>
+
+  <p class="meta">
+    Skill source: pull request
+    <a href="https://github.com/Nudgen-Marketing/mermail-skills/pull/389">Nudgen-Marketing/mermail-skills#389</a><br>
+    Machine-readable run evidence: <a href="evidence.json">evidence.json</a> ·
+    AI client: Hermes Agent (Nous Research) driving Mermail MCP
+  </p>
+</div>
+</body>
+</html>
